@@ -1,4 +1,5 @@
-import pytest
+import pytest,os,sys
+sys.path.append("/home/sekeita/JenkinsCI-for-pythonApp/")
 from click.testing import CliRunner
 
 from irisvmpy import iris

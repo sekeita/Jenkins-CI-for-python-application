@@ -23,19 +23,26 @@ pipeline {
         }
         stage('Build environment') {
             steps {
-                sh '''conda create --yes -n ${BUILD_TAG} python
-                      source activate ${BUILD_TAG} 
-                      pip install -r requirements.txt
+                sh '''#conda create --yes -n ${BUILD_TAG} python
+                      #source activate ${BUILD_TAG} 
+                      #pip install -r requirements.txt
+                      which python
+                      which pip
+                      pip list
                     '''
             }
         }
-        stage('Test environment') {
+        stage('Unit Tests') {
             steps {
-                sh '''source activate ${BUILD_TAG} 
-                      pip list
-                      which pip
-                      which python
+                sh '''#source activate ${BUILD_TAG} 
+                       python -m pytest --verbose --junit-xml test-reports/results.xml
                     '''
+            }
+            post {
+                always {
+                    // Archive unit tests for the future
+                    junit allowEmptyResults: true, testResults: 'test-reports/results.xml', fingerprint: true
+                }
             }
         }
     }
